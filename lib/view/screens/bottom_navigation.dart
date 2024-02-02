@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_113/view/screens/hassan_screen.dart';
 import 'package:flutter_113/view/screens/store/store_screen.dart';
-import 'package:flutter_113/view/screens/login_screen.dart';
+import 'package:flutter_113/view/screens/auth/login_screen.dart';
 
 class BottomNavigationScreen extends StatefulWidget {
   BottomNavigationScreen({Key? key}) : super(key: key);

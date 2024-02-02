@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_113/model/task.dart';
+import 'package:flutter_113/model/task/task_model.dart' as task;
 import 'package:flutter_113/view/screens/tasks/components/task_widget.dart';
-import 'package:flutter_113/view_model/cubit/tasks_cubit/tasks_cubit.dart';
 import 'package:flutter_113/view_model/cubit/tasks_cubit/tasks_cubit.dart';
 import 'package:flutter_113/view_model/enums/tasks_type.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,7 +24,7 @@ class DoneTasks extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             itemBuilder: (context, index) {
               return TaskWidget(
-                task: list[index],
+                task: task.Task(),
               );
             },
             separatorBuilder: (context, index) =>

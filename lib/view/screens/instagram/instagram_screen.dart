@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_113/model/post.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'components/instagram_post_widget.dart';
-import '../login_screen.dart';
+import '../auth/login_screen.dart';
 
 class InstagramScreen extends StatelessWidget {
   const InstagramScreen({Key? key}) : super(key: key);

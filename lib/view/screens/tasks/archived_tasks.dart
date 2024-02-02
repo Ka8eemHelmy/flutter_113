@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_113/model/task.dart';
+import 'package:flutter_113/model/task.dart' as oldTask;
 import 'package:flutter_113/view/screens/tasks/components/task_widget.dart';
-import 'package:flutter_113/view_model/cubit/tasks_cubit/tasks_cubit.dart';
 import 'package:flutter_113/view_model/cubit/tasks_cubit/tasks_cubit.dart';
 import 'package:flutter_113/view_model/enums/tasks_type.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../model/task/task_model.dart';
 
 class ArchivedTasks extends StatelessWidget {
   const ArchivedTasks({Key? key}) : super(key: key);
@@ -14,7 +15,7 @@ class ArchivedTasks extends StatelessWidget {
     return BlocBuilder<TasksCubit, TasksState>(
       builder: (context, state) {
         var cubit = TasksCubit.get(context);
-        List<Task> list = cubit.tasksList.where((element) => element.status == TasksType.archived).toList();
+        List<oldTask.Task> list = cubit.tasksList.where((element) => element.status == TasksType.archived).toList();
         return Visibility(
           visible: list.isNotEmpty,
           replacement: Center(
@@ -24,7 +25,7 @@ class ArchivedTasks extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             itemBuilder: (context, index) {
               return TaskWidget(
-                task: list[index],
+                task: Task(),
               );
             },
             separatorBuilder: (context, index) =>

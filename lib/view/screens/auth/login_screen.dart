@@ -1,43 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_113/view/components/widgets/text_custom.dart';
+import 'package:flutter_113/view/screens/auth/register_screen.dart';
 import 'package:flutter_113/view/screens/instagram/instagram_screen.dart';
+import 'package:flutter_113/view/screens/news/news_screen.dart';
+import 'package:flutter_113/view/screens/tasks/task_screen.dart';
 import 'package:flutter_113/view_model/cubit/auth_cubit/auth_cubit.dart';
 import 'package:flutter_113/view_model/cubit/auth_cubit/auth_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-  TextEditingController emailController = TextEditingController();
-
-  TextEditingController passwordController = TextEditingController();
-
-  bool obscure = true;
-
-  @override
   Widget build(BuildContext context) {
-    print('Build Function Called');
     return BlocProvider(
       create: (context) => AuthCubit(),
       child: BlocBuilder<AuthCubit, AuthState>(
         builder: (context, state) {
+          var cubit = AuthCubit.get(context);
           return Scaffold(
             body: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Form(
-                key: formKey,
+                key: cubit.formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextFormField(
-                      controller: emailController,
+                      controller: cubit.emailController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         enabledBorder: OutlineInputBorder(
@@ -85,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 20,
                     ),
                     TextFormField(
-                      controller: passwordController,
+                      controller: cubit.passwordController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         enabledBorder: OutlineInputBorder(
@@ -121,17 +112,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         prefixIcon: Icon(Icons.password, color: Colors.purple),
                         suffixIcon: IconButton(
                           onPressed: () {
-                            setState(() {
-                              obscure = !obscure;
-                            });
+                            cubit.changeObscure();
                           },
                           icon: Icon(
-                            obscure ? Icons.visibility : Icons.visibility_off_rounded,
-                            color: obscure ? Colors.purple : Colors.grey,
+                            cubit.obscure ? Icons.visibility : Icons.visibility_off_rounded,
+                            color: cubit.obscure ? Colors.purple : Colors.grey,
                           ),
                         ),
                       ),
-                      obscureText: obscure,
+                      obscureText: cubit.obscure,
                       obscuringCharacter: '*',
                       onFieldSubmitted: (value) {
                         print(value);
@@ -143,43 +132,65 @@ class _LoginScreenState extends State<LoginScreen> {
                       validator: (value) {
                         if ((value ?? '').isEmpty) {
                           return 'Please, Enter Your Password';
-                        } else if (!RegExp(r'[A-Z]').hasMatch(value!)) {
-                          return 'Password Must Contain At Least One Capital Letter';
-                        } else if (!RegExp(r'[0-9]').hasMatch(value)) {
-                          return 'Password Must Contain At Least One Number';
-                        } else if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
-                          return 'Password Must Contain At Least One Special Character';
-                        } else if ((value.length) < 8) {
-                          return "Password Can't Be Less Than 8 Characters";
                         }
+                        // else if (!RegExp(r'[A-Z]').hasMatch(value!)) {
+                        //   return 'Password Must Contain At Least One Capital Letter';
+                        // } else if (!RegExp(r'[0-9]').hasMatch(value)) {
+                        //   return 'Password Must Contain At Least One Number';
+                        // } else if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+                        //   return 'Password Must Contain At Least One Special Character';
+                        // } else if ((value.length) < 8) {
+                        //   return "Password Can't Be Less Than 8 Characters";
+                        // }
                         return null;
                       },
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RegisterScreen(),
+                          ),
+                        );
+                      },
+                      child: TextCustom(
+                        text: 'Register',
+                        color: Colors.blue,
+                      ),
                     ),
                     SizedBox(
                       height: 20,
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => InstagramScreen(),
-                          ),
-                              (route) => false,
-                        );
-                        // if(formKey.currentState!.validate()){
-                        //   print(emailController.text);
-                        //   print(passwordController.text);
-                        //   Fluttertoast.showToast(
-                        //       msg: "Login Successfully",
-                        //       toastLength: Toast.LENGTH_LONG,
-                        //       gravity: ToastGravity.BOTTOM,
-                        //       timeInSecForIosWeb: 2,
-                        //       backgroundColor: Colors.purple,
-                        //       textColor: Colors.white,
-                        //       fontSize: 16.0,
-                        //   );
-                        // }
+                        // Navigator.pushAndRemoveUntil(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => InstagramScreen(),
+                        //   ),
+                        //       (route) => false,
+                        // );
+                        if (cubit.formKey.currentState!.validate()) {
+                          cubit.login().then((value) {
+                            Fluttertoast.showToast(
+                              msg: "Login Successfully",
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 2,
+                              backgroundColor: Colors.purple,
+                              textColor: Colors.white,
+                              fontSize: 16.0,
+                            );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TasksScreen(),
+                              ),
+                              // (route) => false,
+                            );
+                          });
+                        }
                       },
                       child: Text('Login'),
                     ),
