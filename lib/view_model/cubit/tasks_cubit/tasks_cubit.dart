@@ -10,6 +10,7 @@ import 'package:flutter_113/view_model/data/network/end_points.dart';
 import 'package:flutter_113/view_model/enums/tasks_type.dart';
 import 'package:flutter_113/view_model/utils/toast.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 
 import '../../../model/task.dart';
@@ -121,6 +122,13 @@ class TasksCubit extends Cubit<TasksState> {
   TextEditingController startDateController = TextEditingController();
   TextEditingController endDateController = TextEditingController();
 
+  String status = 'new';
+
+  void changeStatusOfTask(String status) {
+    this.status = status;
+    emit(ChangeTaskStatusState());
+  }
+
   Future<void> addTask() async {
     emit(AddTaskLoadingState());
     task.Task newTask = task.Task(
@@ -178,13 +186,57 @@ class TasksCubit extends Cubit<TasksState> {
       showToast('Task Deleted Successfully');
       emit(DeleteTaskSuccessState());
       getAllTasks();
-    }).catchError((error){
-      if(error is DioException){
+    }).catchError((error) {
+      if (error is DioException) {
         print(error.response?.data);
-        showToast(error.response?.data?['message'].toString() ?? 'Error on Delete Task', color: Colors.red,);
+        showToast(
+          error.response?.data?['message'].toString() ?? 'Error on Delete Task',
+          color: Colors.red,
+        );
       }
       emit(DeleteTaskErrorState());
       throw error;
     });
+  }
+
+  Future<void> editTask(int taskId) async {
+    emit(EditTaskLoadingState());
+    task.Task editTask = task.Task(
+      title: titleController.text,
+      description: descriptionController.text,
+      startDate: startDateController.text,
+      endDate: endDateController.text,
+      status: status,
+    );
+    await DioHelper.post(
+      endPoint: '${EndPoints.tasks}/$taskId',
+      body: {
+        '_method' : 'PUT',
+        ...editTask.toJson(),
+      },
+      withToken: true,
+    ).then((value) {
+      task.Task editedTask = task.Task.fromJson(value.data['data']);
+      for(int i = 0; i < (taskModel?.data?.tasks ?? []).length; i++){
+        if(taskModel?.data?.tasks?[i].id == taskId){
+          taskModel?.data?.tasks?[i] = editedTask;
+          break;
+        }
+      }
+      emit(EditTaskSuccessState());
+    }).catchError((error){
+      print(error);
+      emit(EditTaskErrorState());
+    });
+  }
+
+  final ImagePicker picker = ImagePicker();
+
+  XFile? image;
+
+  void pickImage () async {
+    emit(PickImageLoadingState());
+    image = await picker.pickImage(source: ImageSource.gallery);
+    emit(PickImageSuccessState());
   }
 }

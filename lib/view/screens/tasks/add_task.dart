@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_113/model/task/task_model.dart';
 import 'package:flutter_113/view/components/widgets/text_custom.dart';
 import 'package:flutter_113/view_model/cubit/tasks_cubit/tasks_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../components/widgets/text_form_field_custom.dart';
 
 class AddTask extends StatelessWidget {
@@ -101,6 +103,99 @@ class AddTask extends StatelessWidget {
               },
             ),
             const SizedBox(
+              height: 12,
+            ),
+            if (task != null)
+              DropdownButtonFormField(
+                value: task?.status,
+                items: const [
+                  DropdownMenuItem(
+                    value: 'new',
+                    child: TextCustom(
+                      text: 'New',
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: 'doing',
+                    child: TextCustom(
+                      text: 'Doing',
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: 'outdated',
+                    child: TextCustom(
+                      text: 'Outdated',
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: 'compeleted',
+                    child: TextCustom(
+                      text: 'Compeleted',
+                    ),
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value != null) {
+                    TasksCubit.get(context).changeStatusOfTask(value);
+                  }
+                },
+                validator: (value) {
+                  if (value == null) {
+                    return 'Please, Select Status of Task';
+                  }
+                  return null;
+                },
+              ),
+            const SizedBox(
+              height: 10,
+            ),
+            Material(
+              borderRadius: BorderRadius.circular(12),
+              child: InkWell(
+                onTap: () async {
+                  await Permission.photos.request();
+                  var status = await Permission.photos.status;
+                  if (status == PermissionStatus.granted) {
+                    TasksCubit.get(context).pickImage();
+                  } else {
+                    await Permission.photos.request();
+                  }
+                },
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.red,
+                    ),
+                  ),
+                  child: BlocBuilder<TasksCubit, TasksState>(
+                    builder: (context, state) {
+                      var cubit = TasksCubit.get(context);
+                      return Visibility(
+                        visible: cubit.image != null,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.network(
+                              'https://static.thenounproject.com/png/1854458-200.png',
+                              width: 100,
+                              height: 100,
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            TextCustom(text: 'Add Image to Your Task'),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
               height: 20,
             ),
             if (task == null)
@@ -160,7 +255,7 @@ class AddTask extends StatelessWidget {
                                         children: [
                                           Expanded(
                                             child: ElevatedButton(
-                                              onPressed: (){
+                                              onPressed: () {
                                                 Navigator.pop(context);
                                               },
                                               child: TextCustom(
@@ -168,10 +263,12 @@ class AddTask extends StatelessWidget {
                                               ),
                                             ),
                                           ),
-                                          SizedBox(width: 10,),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
                                           Expanded(
                                             child: ElevatedButton(
-                                              onPressed: (){
+                                              onPressed: () {
                                                 TasksCubit.get(context).deleteTask(task?.id ?? 0).then((value) {
                                                   Navigator.pop(context);
                                                   Navigator.pop(context);
@@ -218,11 +315,11 @@ class AddTask extends StatelessWidget {
                       height: 50,
                       child: ElevatedButton(
                         onPressed: () {
-                          // if (TasksCubit.get(context).formKey.currentState!.validate()) {
-                          //   TasksCubit.get(context).addTask().then((value) {
-                          //     Navigator.pop(context);
-                          //   });
-                          // }
+                          if (TasksCubit.get(context).formKey.currentState!.validate()) {
+                            TasksCubit.get(context).editTask(task?.id ?? 0).then((value) {
+                              Navigator.pop(context);
+                            });
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
@@ -230,11 +327,17 @@ class AddTask extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const TextCustom(
-                          text: 'Edit',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Colors.white,
+                        child: BlocBuilder<TasksCubit, TasksState>(
+                          builder: (context, state) {
+                            return state is EditTaskLoadingState
+                                ? const CircularProgressIndicator.adaptive()
+                                : const TextCustom(
+                                    text: 'Edit',
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                  );
+                          },
                         ),
                       ),
                     ),

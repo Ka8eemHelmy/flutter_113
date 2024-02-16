@@ -3,7 +3,11 @@ PODS:
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
+  - image_picker_ios (0.0.1):
+    - Flutter
   - package_info_plus (0.4.5):
+    - Flutter
+  - permission_handler_apple (9.3.0):
     - Flutter
   - shared_preferences_foundation (0.0.1):
     - Flutter
@@ -18,7 +22,9 @@ PODS:
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
   - wakelock_plus (from `.symlinks/plugins/wakelock_plus/ios`)
@@ -32,8 +38,12 @@ EXTERNAL SOURCES:
     :path: Flutter
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
+  image_picker_ios:
+    :path: ".symlinks/plugins/image_picker_ios/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   video_player_avfoundation:
@@ -44,12 +54,14 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   fluttertoast: 31b00dabfa7fb7bacd9e7dbee580d7a2ff4bf265
+  image_picker_ios: 99dfe1854b4fa34d0364e74a78448a0151025425
   package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
+  permission_handler_apple: 036b856153a2b1f61f21030ff725f3e6fece2b78
   shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   video_player_avfoundation: 02011213dab73ae3687df27ce441fbbcc82b5579
   wakelock_plus: 8b09852c8876491e4b6d179e17dfe2a0b5f60d47
 
-PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
+PODFILE CHECKSUM: 22fd95043c798c8c8641845767a1f523bdb0cb04
 
 COCOAPODS: 1.14.3

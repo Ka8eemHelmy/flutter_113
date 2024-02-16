@@ -21,8 +21,20 @@ class AddTaskSuccessState extends TasksState {}
 
 class AddTaskErrorState extends TasksState {}
 
+class EditTaskLoadingState extends TasksState {}
+
+class EditTaskSuccessState extends TasksState {}
+
+class EditTaskErrorState extends TasksState {}
+
 class DeleteTaskLoadingState extends TasksState {}
 
 class DeleteTaskSuccessState extends TasksState {}
 
 class DeleteTaskErrorState extends TasksState {}
+
+class ChangeTaskStatusState extends TasksState {}
+
+class PickImageLoadingState extends TasksState {}
+
+class PickImageSuccessState extends TasksState {}
