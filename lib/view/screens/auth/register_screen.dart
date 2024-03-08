@@ -264,7 +264,7 @@ class RegisterScreen extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         if (cubit.formKey.currentState!.validate()) {
-                          cubit.register().then((value) {
+                          cubit.registerFireBase().then((value) {
                             Fluttertoast.showToast(
                               msg: "Register Successfully",
                               toastLength: Toast.LENGTH_LONG,

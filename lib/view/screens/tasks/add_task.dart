@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_113/model/task/task_model.dart';
 import 'package:flutter_113/view/components/widgets/text_custom.dart';
@@ -5,6 +7,8 @@ import 'package:flutter_113/view_model/cubit/tasks_cubit/tasks_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../../../view_model/data/local/shared_helper.dart';
+import '../../../view_model/data/local/shared_keys.dart';
 import '../../components/widgets/text_form_field_custom.dart';
 
 class AddTask extends StatelessWidget {
@@ -174,20 +178,35 @@ class AddTask extends StatelessWidget {
                     builder: (context, state) {
                       var cubit = TasksCubit.get(context);
                       return Visibility(
-                        visible: cubit.image != null,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Image.network(
-                              'https://static.thenounproject.com/png/1854458-200.png',
-                              width: 100,
-                              height: 100,
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            TextCustom(text: 'Add Image to Your Task'),
-                          ],
+                        visible: cubit.image == null,
+                        replacement: Image.file(
+                          File(cubit.image?.path ?? ''),
+                          fit: BoxFit.cover,
+                        ),
+                        child: Visibility(
+                          visible: task?.image == null && cubit.image == null,
+                          replacement: Image.network(
+                            task?.image ?? '',
+                            width: 100,
+                            height: 100,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                height: 50,
+                                child: Image.network(
+                                  'https://static.thenounproject.com/png/1854458-200.png',
+                                  width: 100,
+                                  height: 50,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextCustom(text: 'Add Image to Your Task'),
+                            ],
+                          ),
                         ),
                       );
                     },
@@ -198,13 +217,28 @@ class AddTask extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
+            BlocBuilder<TasksCubit, TasksState>(
+              builder: (context, state) {
+                return Visibility(
+                  visible: state is AddTaskLoadingState,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: LinearProgressIndicator(
+                      color: Colors.red,
+                    ),
+                  ),
+                );
+              },
+            ),
             if (task == null)
               SizedBox(
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    // print(await SharedHelper.get(key: SharedKeys.userId));
+                    // return;
                     if (TasksCubit.get(context).formKey.currentState!.validate()) {
-                      TasksCubit.get(context).addTask().then((value) {
+                      TasksCubit.get(context).addTaskFireStore().then((value) {
                         Navigator.pop(context);
                       });
                     }
@@ -269,7 +303,7 @@ class AddTask extends StatelessWidget {
                                           Expanded(
                                             child: ElevatedButton(
                                               onPressed: () {
-                                                TasksCubit.get(context).deleteTask(task?.id ?? 0).then((value) {
+                                                TasksCubit.get(context).deleteTaskFireStore(task?.taskId ?? '').then((value) {
                                                   Navigator.pop(context);
                                                   Navigator.pop(context);
                                                 });
@@ -316,7 +350,7 @@ class AddTask extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () {
                           if (TasksCubit.get(context).formKey.currentState!.validate()) {
-                            TasksCubit.get(context).editTask(task?.id ?? 0).then((value) {
+                            TasksCubit.get(context).updateTaskFireStore(task?.taskId ?? '').then((value) {
                               Navigator.pop(context);
                             });
                           }

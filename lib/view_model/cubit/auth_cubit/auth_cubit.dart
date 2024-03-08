@@ -1,10 +1,13 @@
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_113/view_model/data/local/shared_helper.dart';
 import 'package:flutter_113/view_model/data/local/shared_keys.dart';
 import 'package:flutter_113/view_model/data/network/dio_helper.dart';
 import 'package:flutter_113/view_model/data/network/end_points.dart';
+import 'package:flutter_113/view_model/firebase/firebase_keys.dart';
 import 'package:flutter_113/view_model/utils/toast.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
@@ -53,8 +56,11 @@ class AuthCubit extends Cubit<AuthState> {
       emit(LoginSuccessState());
     }).catchError((error) {
       print(error.response?.data.toString());
-      if(error is DioException){
-        showToast(error.response?.data['message'].toString() ?? 'Error on Login', color: Colors.red,);
+      if (error is DioException) {
+        showToast(
+          error.response?.data['message'].toString() ?? 'Error on Login',
+          color: Colors.red,
+        );
       }
       emit(LoginErrorState());
       throw error;
@@ -66,17 +72,52 @@ class AuthCubit extends Cubit<AuthState> {
     await DioHelper.post(
       endPoint: EndPoints.register,
       body: {
-        'name' : nameController.text,
-        'email' : emailController.text,
-        'password' : passwordController.text,
-        'password_confirmation' : confirmPasswordController.text,
+        'name': nameController.text,
+        'email': emailController.text,
+        'password': passwordController.text,
+        'password_confirmation': confirmPasswordController.text,
       },
     ).then((value) {
       print(value.data);
       emit(RegisterSuccessState());
-    }).catchError((error){
+    }).catchError((error) {
       print(error);
       emit(RegisterErrorState());
+      throw error;
+    });
+  }
+
+  Future<void> registerFireBase() async {
+    emit(RegisterLoadingState());
+    await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+      email: emailController.text,
+      password: passwordController.text,
+    ).then((value) {
+      FirebaseFirestore.instance.collection(FirebaseKeys.users).doc(value.user?.uid).set({
+        'id' : value.user?.uid,
+        'name' : nameController.text,
+        'email': emailController.text,
+      });
+      emit(RegisterLoadingState());
+    }).catchError((error) {
+      emit(RegisterErrorState());
+      throw error;
+    });
+  }
+
+  Future<void> loginFireBase() async {
+    emit(LoginLoadingState());
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: emailController.text,
+      password: passwordController.text,
+    ).then((value) async {
+      await SharedHelper.set(key: SharedKeys.token, value: value.user?.uid);
+      await SharedHelper.set(key: SharedKeys.userId, value: value.user?.uid);
+      await SharedHelper.set(key: SharedKeys.userEmail, value: value.user?.email);
+      emit(LoginSuccessState());
+    }).catchError((error) {
+      emit(LoginErrorState());
       throw error;
     });
   }

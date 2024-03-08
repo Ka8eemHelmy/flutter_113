@@ -38,3 +38,9 @@ class ChangeTaskStatusState extends TasksState {}
 class PickImageLoadingState extends TasksState {}
 
 class PickImageSuccessState extends TasksState {}
+
+class GetMoreTasksLoadingState extends TasksState {}
+
+class GetMoreTasksSuccessState extends TasksState {}
+
+class GetMoreTasksErrorState extends TasksState {}

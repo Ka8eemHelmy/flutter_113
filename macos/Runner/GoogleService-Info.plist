@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyCzd7aqgIqQ9Nh9xqCMfFR7G6RsQGePWZc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>857411037860</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.eraasoft.flutter113.RunnerTests</string>
+	<key>PROJECT_ID</key>
+	<string>eraasoft-5fd7a</string>
+	<key>STORAGE_BUCKET</key>
+	<string>eraasoft-5fd7a.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:857411037860:ios:36febafbd9a2ad6a42d431</string>
+</dict>
+</plist>

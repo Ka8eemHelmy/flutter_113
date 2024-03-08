@@ -15,7 +15,7 @@ class TasksScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: TasksCubit.get(context)..getAllTasks(),
+      value: TasksCubit.get(context)..getTasksFireStore(),
       child: Scaffold(
         body: const SafeArea(
           child: TabBarCustom(

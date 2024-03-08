@@ -15,7 +15,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AuthCubit(),
+      create: (context)   => AuthCubit(),
       child: BlocBuilder<AuthCubit, AuthState>(
         builder: (context, state) {
           var cubit = AuthCubit.get(context);
@@ -172,7 +172,7 @@ class LoginScreen extends StatelessWidget {
                         //       (route) => false,
                         // );
                         if (cubit.formKey.currentState!.validate()) {
-                          cubit.login().then((value) {
+                          cubit.loginFireBase().then((value) {
                             Fluttertoast.showToast(
                               msg: "Login Successfully",
                               toastLength: Toast.LENGTH_LONG,

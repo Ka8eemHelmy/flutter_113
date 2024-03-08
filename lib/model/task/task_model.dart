@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class TaskModel {
   Data? data;
   String? message;
@@ -80,15 +82,19 @@ class Task {
   String? startDate;
   String? endDate;
   String? status;
+  String? taskId;
+  String? userId;
 
   Task({
     this.id,
+    this.taskId,
     this.title,
     this.description,
     this.image,
     this.startDate,
     this.endDate,
     this.status,
+    this.userId,
   });
 
   Task.fromJson(Map<String, dynamic> json) {
@@ -101,6 +107,18 @@ class Task {
     status = json['status'];
   }
 
+  Task.fromFireStore(QueryDocumentSnapshot<Map<String, dynamic>> value) {
+    // id = json['id'];
+    taskId = value.id;
+    title = value.data()['title'];
+    description = value.data()['description'];
+    image = value.data()['image'];
+    startDate = value.data()['start_date'];
+    endDate = value.data()['end_date'];
+    status = value.data()['status'];
+    userId = value.data()['user_id'];
+  }
+
   Map<String, dynamic> toJson() {
     return {
       // 'id' : id,
@@ -110,6 +128,7 @@ class Task {
       'start_date': startDate,
       'end_date': endDate,
       if (status != null) 'status': status,
+      if(userId != null) 'user_id': userId,
     };
   }
 }

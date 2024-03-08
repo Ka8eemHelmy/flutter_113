@@ -74,6 +74,13 @@ class TaskWidget extends StatelessWidget {
                   ),
               ],
             ),
+            if (task.image != null)
+              Image.network(
+                task.image ?? '',
+                width: double.infinity,
+                height: 200,
+                fit: BoxFit.cover,
+              ),
           ],
         ),
       ),
